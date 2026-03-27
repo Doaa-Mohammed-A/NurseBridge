@@ -1,0 +1,5 @@
+streamlit==1.45.1
+openai==1.82.0
+pypdf2==3.0.1
+fpdf2==2.8.3
+pyperclip==1.9.0
