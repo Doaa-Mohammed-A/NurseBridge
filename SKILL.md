@@ -1,213 +1,344 @@
 ---
-name: supplier-research
-description: Research, evaluate, and compare suppliers and vendors for B2B procurement
+name: ai-integrations-gemini
+description: |
+  Gemini AI integration via Replit AI Integrations proxy (JavaScript/TypeScript). Provides Gemini-compatible API access without requiring your own API key.
 ---
 
-# Supplier & Vendor Research
+# Gemini AI Integration
 
-Research, evaluate, and compare suppliers and vendors for B2B procurement. Build vendor shortlists, evaluation matrices, and RFP frameworks.
+Set up Gemini AI integration via Replit AI Integrations proxy. Keys are automatically provisioned.
 
-## When to Use
+## Supported Gemini APIs
 
-- User needs to find suppliers for a product, service, or component
-- User wants to evaluate and compare vendors
-- User needs an RFP or vendor evaluation framework
-- User asks about procurement best practices
-- User wants to assess supplier risk or negotiate better terms
+- generateContent/generate_content
+- generateContentStream/generate_content_stream
+
+## Supported Gemini Models
+
+- gemini-3.1-pro-preview: latest and most powerful model for agentic workflows and vibe-coding. Prefer this one over other pro series models.
+- gemini-3-pro-preview: powerful model for agentic workflows and vibe-coding.
+- gemini-3-flash-preview: hybrid reasoning model good for daily use and high-volume tasks. Prefer this one over flash series models.
+- gemini-3-pro-image-preview (nano banana pro): thinking model that is good for high-quality image generation tasks where detail and accuracy matters most.
+- gemini-2.5-pro: excels at coding and complex reasoning tasks
+- gemini-2.5-flash: hybrid reasoning model good for daily use and high-volume tasks
+- gemini-2.5-flash-image (nano banana): native image generation model good for ultra-fast image generation tasks where speed matters most.
+
+IMPORTANT: Models not listed above are NOT available through AI integrations. Never use unlisted models with this integration.
+
+## Unsupported Capabilities
+
+The following capabilities are NOT supported by Gemini AI integrations. Do NOT proceed with this integration for these use cases:
+
+- Live API (for any model)
+- embeddings
+- fine-tuning
+- files API
+- audio/video generation/output
+
+## Example Use Cases
+
+Some example use cases (non-exhaustive):
+
+- gemini-3.1-pro-preview: tasks requiring complex reasoning
+- gemini-2.5-flash: general purpose chat, image/audio/video transcription/summary/analysis, high-volume tasks
+- gemini-2.5-flash-image: image generation
 
 ## When NOT to Use
 
-- Personal product shopping (use personal-shopper skill)
-- Competitive market analysis (use competitive-analysis skill)
-- Software/SaaS evaluation only (use deep-research skill)
+Example use cases for when NOT to use this integration are below. For these use cases, consider searching for other integrations first, then use Gemini directly with the user's own API key if none are found:
 
-## Methodology
+- realtime voice/video interaction
+- audio or video generation
 
-### Step 1: Requirements Definition
+## Agent Stack Note
 
-Before researching suppliers, clarify:
+When user is building features related to "Agent Stack (Agents and Automations)", you MUST always setup an LLM provider - regardless of whether the specific implementation appears to need AI/LLM capabilities or not. DO NOT second-guess this requirement. Skipping the LLM provider setup in such cases will lead to broken code and awful user experience. Follow the guidelines below to determine whether to proceed with this integration or other Gemini integrations.
 
-**What you need:**
+## Selection Guidelines
 
-- Product/service specification (be specific)
-- Volume/quantity requirements
-- Quality standards and certifications needed
-- Timeline and delivery requirements
+Before proceeding with setting up this integration, check if the user already has the integration set up. If they do then DO NOT proceed.
 
-**Constraints:**
+Match whether or not to use this integration based on the following order of precedence (stop at the first match):
 
-- Budget range
-- Geographic preferences (domestic, nearshore, offshore)
-- Compliance requirements (ISO, SOC2, GDPR, industry-specific)
-- Minimum order quantities
-- Payment terms preferences
+Precedence 1 — **Explicit user requests**
 
-### Step 2: Supplier Discovery
+- The user wants to use their own API key: Do NOT proceed with this integration
+- The user specifically asks for Gemini and the requested capability is supported: Proceed with this integration
+- The user asked for Gemini but needs a capability or model NOT listed in the supported sections above: This integration CANNOT provide it. You MUST use Gemini directly with the user's own API key instead
 
-Match the directory to the sourcing geography. Use `webSearch` + `webFetch` against these:
+Precedence 2 — **Use-case triggers** (proceed with this integration)
 
-| Platform | Coverage | Best for | Caveat |
-|----------|----------|----------|--------|
-| **Thomasnet** | 500k+ North American suppliers | US/Canada industrial — machinery, plastics, metals, custom components. Free for buyers. Filter by ISO certs + CAD availability. | US-only; no pricing shown |
-| **Alibaba** | 200k+ suppliers, 200M+ SKUs | China/Asia, prototype sampling, MOQ benchmarking across 5,900 categories | Many "manufacturers" are trading companies — verify with customs data |
-| **Global Sources** | Asia, audited | Electronics, consumer goods. Stronger supplier audits than Alibaba. | Smaller catalog |
-| **IndiaMART** | India | Textiles, chemicals, pharma intermediates, generics | Data quality varies widely |
-| **Kompass / Europages** | EU | EU-based sourcing when GDPR/CE compliance matters | Limited free tier |
-| **ImportYeti** (free) | US ocean freight records | **Verification, not discovery.** Look up a supplier to see real US customs shipment history — who they actually ship to, how often, what volume. Exposes trading companies posing as factories. | Sea freight only, US imports only |
-| **Panjiva / ImportGenius** | Global trade data | Competitor supply chain mapping — find out who your competitors buy from | Paid, learning curve |
+- Image editing/generation (prefer Gemini image generation over OpenAI).
+- Audio/video input or other scenarios only supported by this integration.
 
-**Agent search patterns:**
+Precedence 3 — **No provider specified**
 
-- `site:thomasnet.com "[product] manufacturer" [state]` — direct directory scrape
-- `site:alibaba.com "[product]" "verified supplier" "trade assurance"` — pre-filtered for badges
-- `webFetch: importyeti.com/company/[supplier-name]` — verify real export activity before engaging
-- `"[competitor product name]" "made in" OR "manufactured by"` — reverse-engineer competitor supply chains
-- `site:alibaba.com "[product]" MOQ` — quickly benchmark minimum order quantities across suppliers
+- Default to OpenAI AI integrations if it supports the requested use case. If it does not, use OpenAI directly with the user's own API key
+- If even OpenAI directly with API key does not support the requested use case, find another integration or alternative
 
-**2025 geography shift:** Vietnam, India, and Mexico are the primary China+1 alternatives. Mexico benefits from USMCA (no tariffs, 3-5 day freight vs 30+ from Asia). Vietnam is strong in furniture/electronics assembly. India is strong in textiles/pharma/software.
+If this is the first time proposing or using this integration, clearly indicate that this internally uses Replit AI Integrations for Gemini access, does not require your own API key, and that charges are billed to your credits. You must specifically include every one of these three details.
 
-Target: 8-12 candidates for RFI, narrow to 3-5 for RFQ.
+## When to Use
 
-### Step 3: Vendor Evaluation Matrix
+- User needs Gemini AI capabilities (chat, completions)
+- User does not want to provide their own API key
+- Any AI/LLM request that should use Gemini
 
-Score each vendor across weighted criteria:
+## How to Set Up
 
-| Category | Weight | Criteria |
-|----------|--------|----------|
-| **Quality** | 25% | Certifications, defect rates, QC processes, samples |
-| **Cost** | 20% | Unit price, total cost of ownership, volume discounts, hidden fees |
-| **Delivery** | 20% | Lead times, on-time delivery rate, shipping methods, inventory |
-| **Capability** | 15% | Production capacity, scalability, technology, R&D |
-| **Reliability** | 10% | Financial stability, years in business, references, insurance |
-| **Compliance** | 10% | Regulatory compliance, certifications, ESG practices, data security |
+### 1. Provision the AI integration (env vars)
 
-**Scoring scale:** 1 (poor) to 5 (excellent) per criterion.
+In the JavaScript sandbox, call:
 
-**Total Cost of Ownership (TCO):**
-Don't just compare unit prices. Include:
-
-- Purchase price
-- Shipping and logistics
-- Import duties and taxes
-- Quality inspection costs
-- Inventory carrying costs
-- Switching costs
-- Risk costs (what if they fail to deliver?)
-
-### Step 4: Verification & Risk Assessment
-
-**Verify the factory is real (the #1 failure mode in overseas sourcing):**
-
-- **Customs data cross-check**: `webFetch` the supplier on ImportYeti — consistent monthly shipments to recognizable brands = real factory. Zero export history or shipments only to shell companies = trading company or fraud.
-- **Certificate verification**: Don't trust uploaded PDFs. ISO 9001 certs have a cert number — verify on the issuing body's site (SGS, BV, TÜV, Intertek all have public lookup tools). `webSearch: "[cert body] certificate verification [cert number]"`.
-- **Business license**: For China, request the Unified Social Credit Code (18 digits) — verifiable on the National Enterprise Credit system. For US, check state Secretary of State filings.
-- **Address verification**: `webSearch` the factory address — Google Maps satellite view should show an industrial facility, not a residential block or office tower.
-- **Alibaba badges**: "Verified Supplier" means a third party (SGS/BV) physically visited. "Gold Supplier" just means they paid a fee — it verifies nothing.
-
-**Risk dimensions:**
-
-| Risk type | Check | Red flags |
-|-----------|-------|-----------|
-| **Financial** | D&B report, years in business, customer concentration | <3 years operating, >40% revenue from one customer, requests 100% upfront payment |
-| **Operational** | Factory count, capacity utilization, QC process docs | Single facility, no in-house QC team, won't allow video factory tour |
-| **Geopolitical** | Tariff exposure (Section 301 for China), sanctions lists (OFAC SDN list), port stability | Sourcing region on UFLPA entity list, currency controls, single-port dependency |
-| **Compliance** | UFLPA (Xinjiang forced labor — US *presumes* guilt for flagged regions), EU CSDDD due-diligence rules (2024+), conflict minerals (3TG) | Can't provide tier-2 supplier list, cotton/polysilicon from Xinjiang, no chain-of-custody docs |
-| **Supply chain** | Tier-2 dependencies, raw material source, seasonal capacity (Chinese New Year = 4-6 wk shutdown) | Won't name their material suppliers, capacity claims exceed facility size |
-
-### Step 5: RFP/RFQ Process
-
-If conducting a formal selection:
-
-**RFP structure:**
-
-1. Company overview and project background
-2. Scope of work / product specifications
-3. Volume and timeline requirements
-4. Quality and compliance requirements
-5. Pricing format (line item breakdown)
-6. References (3+ similar clients)
-7. Evaluation criteria and weights
-8. Timeline for responses and decision
-
-**Evaluation process:**
-
-1. Distribute RFP to shortlisted vendors (3-5)
-2. Allow Q&A period
-3. Score responses against evaluation matrix
-4. Conduct reference checks for top 2-3
-5. Request samples or pilot project
-6. Negotiate final terms with preferred vendor
-7. Award and onboard
-
-### Step 6: Negotiation Preparation
-
-**Levers ranked by typical yield:**
-
-1. **Volume commitment** — annual forecast (even non-binding) usually unlocks 8-15% off spot pricing
-2. **Payment terms** — overseas default is 30% deposit / 70% pre-shipment. Pushing to 30/70 *after* delivery, or Net 30 from shipment, is worth 2-5% of unit cost in cash flow
-3. **Incoterms** — know the difference: FOB (you pay freight + insurance from port), CIF (supplier pays to your port, but *you* bear risk in transit — worst of both), DDP (supplier handles everything including customs — most expensive, least risk). FOB is the standard for experienced buyers.
-4. **MOQ flexibility** — first-order MOQ is almost always negotiable down 30-50% if you frame it as a paid trial. "We'll pay the higher per-unit price on 500 units to validate, then commit to your 2,000 MOQ."
-5. **Tooling/mold ownership** — for custom parts, negotiate that *you* own the mold after paying for it. Otherwise you're locked in forever.
-
-**Contract terms that matter most:**
-
-- **Price escalation clause** — cap annual increases at a named index (e.g., PPI for the material category), not "supplier discretion"
-- **Quality SLA with teeth** — define AQL (Acceptable Quality Level — typically 2.5 for general goods, 1.0 for critical components), specify who pays for third-party inspection (QIMA, SGS), and define the remedy (rework at supplier cost, not just credit)
-- **Lead time + late penalties** — industry norm: 1-2% of order value per week late, capped at 10%
-- **IP protection** — NNN agreement (Non-disclosure, Non-use, Non-circumvention) for China, not a US-style NDA — US NDAs are unenforceable in Chinese courts
-- **Exit clause** — right to terminate with 60-90 days notice, obligation to complete in-flight orders, tooling transfer terms
-
-## Output Format
-
-Always present key findings and recommendations as a plaintext summary in chat, even when also generating files. The user should be able to understand the results without opening any files.
-
-```text
-
-# Vendor Evaluation: [Category]
-
-## Requirements Summary
-[Key specs, volume, timeline, constraints]
-
-## Shortlisted Vendors
-
-### 1. [Vendor Name]
-
-- Website: [url]
-- Location: [city, country]
-- Specialization: [what they do]
-- Key Strengths: [2-3 points]
-- Concerns: [1-2 points]
-- Estimated Cost: [range]
-
-### 2. [Vendor Name]
-...
-
-## Evaluation Matrix
-| Criteria (Weight) | Vendor A | Vendor B | Vendor C |
-|-------------------|----------|----------|----------|
-| Quality (25%) | 4/5 | 3/5 | 5/5 |
-| Cost (20%) | 5/5 | 4/5 | 3/5 |
-| ... | | | |
-| **Weighted Total** | **X.X** | **X.X** | **X.X** |
-
-## Recommendation
-[Top pick with reasoning, runner-up, and suggested next steps]
-
+```javascript
+const result = await setupReplitAIIntegrations({
+    providerSlug: "gemini",
+    providerUrlEnvVarName: "AI_INTEGRATIONS_GEMINI_BASE_URL",
+    providerApiKeyEnvVarName: "AI_INTEGRATIONS_GEMINI_API_KEY"
+});
+console.log(result);
 ```
 
-## Best Practices
+### 2. Copy the template files into your project
 
-1. **Never single-source critical components** — maintain a qualified backup at 10-20% of volume even if unit cost is higher
-2. **Sample → pilot → scale** — paid samples first, then a pilot run of 5-10% of target volume, then commit. Never skip to full MOQ.
-3. **Third-party inspection before final payment** — QIMA, SGS, or Bureau Veritas run pre-shipment inspections for ~$300. Cheaper than one bad container.
-4. **Back-channel references** — find their customers via ImportYeti shipment records and cold-email them. Supplier-provided references are curated.
-5. **Plan around Chinese New Year** — factories shut 4-6 weeks (late Jan/Feb). Orders placed in December ship in March. Build buffer inventory by November.
-6. **Landed cost, not unit cost** — a $2.00 unit from China can land at $3.50 after freight, 25% Section 301 tariff, duty, and inspection. A $2.80 unit from Mexico under USMCA might land at $3.10.
+```bash
+cp -r .local/skills/ai-integrations-gemini/templates/lib/* lib/
+```
 
-## Limitations
+This copies two sets of files:
 
-- Cannot access paid databases (Panjiva, D&B, ImportGenius full data) — ImportYeti free tier is the workaround for US import verification
-- Cannot physically inspect facilities or samples — always recommend third-party audit for orders >$10k
-- Cannot verify certificate authenticity directly — provides the lookup URLs for the user to check
-- Tariff rates and trade rules change frequently (Section 301, UFLPA scope) — verify current rates at time of order
-- Pricing from directory listings is indicative only — real quotes require RFQ with full specs
+- `lib/integrations-gemini-ai/` — the integration workspace package
+- `lib/db/src/schema/conversations.ts` and `lib/db/src/schema/messages.ts` — the Drizzle schema files for the `conversations` and `messages` tables
+
+### 3. Add the integration dependency
+
+Add the integration package to your API server's `package.json`:
+
+```json
+{
+  "dependencies": {
+    "@workspace/integrations-gemini-ai": "workspace:*"
+  }
+}
+```
+
+### 4. Install dependencies
+
+```bash
+pnpm install --no-frozen-lockfile
+```
+
+### 5. Add TypeScript project references
+
+Add the new lib to the root `tsconfig.json` references:
+
+```json
+{ "path": "./lib/integrations-gemini-ai" }
+```
+
+Add to `artifacts/api-server/tsconfig.json` references:
+
+```json
+{ "path": "../../lib/integrations-gemini-ai" }
+```
+
+### 6. Add the API contract
+
+Read `references/openapi.md` for the OpenAPI spec entries. Add the paths and schemas to `lib/api-spec/openapi.yaml` under the `/gemini` prefix, then run codegen:
+
+```bash
+pnpm --filter @workspace/api-spec run codegen
+```
+
+### 7. Implement routes and push database
+
+See Wiring Instructions below.
+
+## IMPORTANT
+
+- You should NEVER ask the user for secrets or env vars for this integration. Nor should you ever attempt to modify these env vars. AI_INTEGRATIONS_GEMINI_BASE_URL and AI_INTEGRATIONS_GEMINI_API_KEY are automatically set during setup
+- The value of AI_INTEGRATIONS_GEMINI_API_KEY is a dummy string to make the SDK compatible. Do not assume it's misconfigured without testing the API call. It should work as expected when AI_INTEGRATIONS_GEMINI_BASE_URL is also set
+- If setup failed or env vars are missing after setup, retry the `setupReplitAIIntegrations` call. DO NOT try measures other than this to fix the issue. If after 3 retries the issue persists, switch to using an api-key-based approach
+
+## Code Generation Guidelines
+
+Use the SDK client shown in the provided modules rather than calling endpoints directly via fetch.
+
+When instantiating the Gemini client, refer to the code in `lib/integrations-gemini-ai/src/client.ts` for how to initialize with the env vars.
+
+When building features on Agent Stack (Agents and Automations), use AI_INTEGRATIONS_GEMINI_BASE_URL and AI_INTEGRATIONS_GEMINI_API_KEY when instantiating the Gemini client.
+
+For any tasks that require multiple/many LLM calls, you MUST use retries with backoff and rate limiters. Use the batch utilities module for guidance.
+
+To avoid unexpected overcharges, only use the pro-series image model when the user explicitly:
+
+- requests to use a pro-series image model
+- requests to use nano banana pro
+- asks for high-quality image generation
+By default, prefer to use the latest flash-series image model.
+
+If your app processes audio or video inputs, you MUST chunk your input data into smaller chunks and process individually. Gemini through AI integrations only supports inline input data (no files API support), which has a max input size limit of 8 MB. In addition to chunking you MUST ALWAYS use retries AND rate limiting when making LLM calls for audio/video processing.
+
+Do not eagerly upgrade model on existing code unless user explicitly requests it.
+
+If you set a max tokens limit, use 8192 tokens. NEVER set any token limits lower than this unless explicitly requested.
+
+## Provided Modules
+
+After copying the template files, these modules are available:
+
+### Client (`lib/integrations-gemini-ai/src/client.ts`)
+
+- Pre-configured GoogleGenAI SDK client with env var validation
+- Throws at startup if `AI_INTEGRATIONS_GEMINI_BASE_URL` or `AI_INTEGRATIONS_GEMINI_API_KEY` are missing
+
+### Image module (`lib/integrations-gemini-ai/src/image/`)
+
+- `generateImage(prompt)` - Generates an image using Gemini's native image generation and returns `{ b64_json, mimeType }`
+- Uses `gemini-2.5-flash-image` model by default with `Modality.IMAGE` response
+
+### Batch utilities (`lib/integrations-gemini-ai/src/batch/`)
+
+- `batchProcess<T, R>(items, processor, options)` - Generic batch processor with rate limiting and retries
+- `batchProcessWithSSE<T, R>(items, processor, sendEvent, options)` - Sequential processor with SSE streaming
+- `isRateLimitError(error)` - Helper to detect rate limit errors
+
+### DB Model (`lib/db/src/schema/`)
+
+- Drizzle schema files for the `conversations` and `messages` tables
+- Zod validation schemas via drizzle-zod
+- TypeScript types for Conversation, Message, and insert types
+
+### API Contract (`references/openapi.md`)
+
+- OpenAPI spec entries for Gemini chat and image endpoints under `/gemini/` prefix
+- Read this reference and add the entries to `lib/api-spec/openapi.yaml`
+
+## Wiring Instructions
+
+### 1. Add OpenAPI spec entries
+
+Read `references/openapi.md` and add the paths, schemas, and tag to `lib/api-spec/openapi.yaml`. Endpoints are prefixed with `/gemini/` (e.g. `/gemini/conversations`, `/gemini/generate-image`).
+
+### 2. Run codegen
+
+```bash
+pnpm --filter @workspace/api-spec run codegen
+```
+
+### 3. Export the DB model
+
+Update the existing db package barrel file so migrations pick up the tables. Do not overwrite the existing `lib/db/src/schema/index.ts` when copying files. Add:
+
+```typescript
+export * from "./conversations";
+export * from "./messages";
+```
+
+This is critical — the `conversations` and `messages` tables must be exported from `@workspace/db` so database migrations create them.
+
+### 4. Run database migration
+
+```bash
+pnpm --filter @workspace/db run push
+# If it fails with column conflicts:
+pnpm --filter @workspace/db run push-force
+```
+
+### 5. Implement routes
+
+Add routes in `artifacts/api-server/src/routes/gemini/`. Use generated `@workspace/api-zod` schemas for validation and `@workspace/db` for database queries. Import `ai` from `@workspace/integrations-gemini-ai` for the SDK client.
+
+For the streaming message endpoint, use `ai.models.generateContentStream()`. You must set SSE headers, map the Gemini `"model"` role, and send a termination event:
+
+```typescript
+import { ai } from "@workspace/integrations-gemini-ai";
+
+res.setHeader("Content-Type", "text/event-stream");
+res.setHeader("Cache-Control", "no-cache");
+res.setHeader("Connection", "keep-alive");
+
+let fullResponse = "";
+
+const stream = await ai.models.generateContentStream({
+  model: "gemini-2.5-flash",
+  contents: chatMessages.map((m) => ({
+    role: m.role === "assistant" ? "model" : "user",
+    parts: [{ text: m.content }],
+  })),
+  config: { maxOutputTokens: 8192 },
+});
+
+for await (const chunk of stream) {
+  const text = chunk.text;
+  if (text) {
+    fullResponse += text;
+    res.write(`data: ${JSON.stringify({ content: text })}\n\n`);
+  }
+}
+
+// Save assistant message to DB, then signal completion
+res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+res.end();
+```
+
+**Gemini role mapping:** Gemini uses `"model"` where other providers use `"assistant"`. When loading messages from the DB (which stores `"assistant"`), map the role before passing to `generateContentStream`.
+
+**SSE codegen limitation:** Orval cannot generate a usable client hook or response Zod schema for this streaming endpoint. The generated `@workspace/api-zod` schema for `SendGeminiMessageBody` (from the `sendGeminiMessage` operationId) IS useful for validating the request body, but the response type will be `unknown`. On the client, consume the stream with `fetch` + `ReadableStream` parsing — do NOT use a generated React Query hook for this endpoint.
+
+For image generation:
+
+```typescript
+import { generateImage } from "@workspace/integrations-gemini-ai/image";
+
+const { b64_json, mimeType } = await generateImage(prompt);
+res.json({ b64_json, mimeType });
+```
+
+Mount the router in `artifacts/api-server/src/routes/index.ts`.
+
+### 6. Write client-side UI components based on user requirements
+
+### 7. Batch processing
+
+For batch processing tasks, ALWAYS use the batchProcess utility:
+
+```typescript
+import { batchProcess } from "@workspace/integrations-gemini-ai/batch";
+import { ai } from "@workspace/integrations-gemini-ai";
+
+const results = await batchProcess(
+  items,
+  async (item) => {
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: [{ role: "user", parts: [{ text: `Process: ${item.name}` }] }],
+      config: { responseMimeType: "application/json" },
+    });
+    return response.text ?? "";
+  },
+  { concurrency: 2, retries: 5 }
+);
+```
+
+For SSE streaming progress:
+
+```typescript
+import { batchProcessWithSSE } from "@workspace/integrations-gemini-ai/batch";
+
+await batchProcessWithSSE(
+  items,
+  async (item) => { /* your processor */ },
+  (event) => res.write(`data: ${JSON.stringify(event)}\n\n`)
+);
+```
+
+## Drizzle Dependency
+
+The project is expected to use Drizzle ORM with drizzle-zod for validation. Use the provided schema files as-is.
+
+## Important
+
+- DO NOT modify the Gemini client setup - env vars are auto-configured
+- DO NOT overwrite the existing db schema barrel when copying files
+- DO NOT ask the user for API keys or secrets
