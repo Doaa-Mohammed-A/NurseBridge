@@ -1,0 +1,10 @@
+Update app configuration to run in production environments
+
+Add production run command to artifact.toml to bind Streamlit to port 8080.
+
+Replit-Commit-Author: Agent
+Replit-Commit-Session-Id: 6ef3482d-3abc-4a69-b7ac-8fe954cb4f05
+Replit-Commit-Checkpoint-Type: full_checkpoint
+Replit-Commit-Event-Id: 4d21e6cc-8538-4f37-8bcb-85686ae4d4fa
+Replit-Commit-Screenshot-Url: https://storage.googleapis.com/screenshot-production-us-central1/520a6896-972b-4274-9fff-64474426ec50/6ef3482d-3abc-4a69-b7ac-8fe954cb4f05/gSYjltu
+Replit-Helium-Checkpoint-Created: true
